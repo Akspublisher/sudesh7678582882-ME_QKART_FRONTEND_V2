@@ -2,7 +2,7 @@ import { Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import React, { useState } from "react";
+import React, { isValidElement, useState } from "react";
 import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -42,15 +42,15 @@ const Register = () => {
    * }
    */
   const register = async (formData) => {
-    
+    if(validateInput(formData)){
     try{
-      //setIsLoading(true)
+      setIsLoading(true)
     let res = await axios.post(`${config.endpoint}/auth/register`, {
       username:formData.username,
       password:formData.password
      
     })
-    console.log(res, "res");
+    //console.log(res, "res");
     if(res.status == 201){
       enqueueSnackbar("Registered successfully",{variant:"success"})
     }
@@ -58,17 +58,17 @@ const Register = () => {
    }catch(error){
     //console.log(error.response.data.message,"res_error")
    if(error.response.status == 400){
-       enqueueSnackbar("400 failed",{variant:"error"})
+       enqueueSnackbar(error.response.data.message,{variant:"error"})
      } else{
-     enqueueSnackbar("other 400 error",{variant:"error"})
+     enqueueSnackbar("Something went wrong. Check that the backend is running, reachable and returns valid JSON.",{variant:"error"})
    }
   }
 
-  //   finally{
-  //    // setIsLoading(false);
-  //   }
-   // }
-  
+    finally{
+      setIsLoading(false);
+    }
+   }
+
   };
 
   // TODO: CRIO_TASK_MODULE_REGISTER - Implement user input validation logic
@@ -90,27 +90,27 @@ const Register = () => {
    * -    Check that confirmPassword field has the same value as password field - Passwords do not match
    */
   const validateInput = (data) => {
-    // if(!data.username){
-    //   enqueueSnackbar("Username is a required field", {variant:"warning"})
-    //   return false;
-    // }
-    // if(!data.username.length<6){
-    //   enqueueSnackbar("Username must be at least 6 characters",{variant:"warning"})
-    //   return false;
-    // }
-    // if(!data.password){
-    //   enqueueSnackbar("Password is a required field",{variant:"warning"})
-    //   return false;
-    // }
-    // if(!data.password.length<6){
-    //   enqueueSnackbar("Password must be at least 6 characters",{variant:"warning"})
-    //   return false;
-    // }
-    // if(data.password !== data.confirmPassword){
-    //   enqueueSnackbar("Username must be at least 6 characters",{variant:"warning"})
-    //   return false;
-    // }
-    // return true;
+    if(!data.username){
+      enqueueSnackbar("Username is a required field", {variant:"warning"})
+      return false;
+    }
+    if(data.username.length<6){
+      enqueueSnackbar("Username must be at least 6 characters",{variant:"warning"})
+      return false;
+    }
+    if(!data.password){
+      enqueueSnackbar("Password is a required field",{variant:"warning"})
+      return false;
+    }
+    if(data.password.length<6){
+      enqueueSnackbar("Password must be at least 6 characters",{variant:"warning"})
+      return false;
+    }
+    if(data.password !== data.confirmPassword){
+      enqueueSnackbar("Password do not match",{variant:"warning"})
+      return false;
+    }
+    return true;
   };
 
   const handleInput = (e) =>{
@@ -162,9 +162,9 @@ const Register = () => {
             type="password"
             fullWidth
           />
-           <Button variant="contained" className="button" onClick={(e)=>register(formData)} >
+           {isLoading ? <Box sx={{display:"fled", justifyContent:"center"}}><CircularProgress size={24}/></Box>:<Button variant="contained" className="button" onClick={(e)=>register(formData)} >
             Register Now
-           </Button>
+           </Button>}
           <p className="secondary-action">
             Already have an account?{" "}
              <a className="link" href="#">
