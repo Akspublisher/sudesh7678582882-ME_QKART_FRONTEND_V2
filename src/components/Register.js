@@ -10,6 +10,12 @@ import "./Register.css";
 
 const Register = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const [formData, setFormData] = useState({
+    username:"",
+    password:"",
+    confirmPassword:""
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
 
   // TODO: CRIO_TASK_MODULE_REGISTER - Implement the register function
@@ -36,6 +42,33 @@ const Register = () => {
    * }
    */
   const register = async (formData) => {
+    
+    try{
+      //setIsLoading(true)
+    let res = await axios.post(`${config.endpoint}/auth/register`, {
+      username:formData.username,
+      password:formData.password
+     
+    })
+    console.log(res, "res");
+    if(res.status == 201){
+      enqueueSnackbar("Registered successfully",{variant:"success"})
+    }
+  
+   }catch(error){
+    //console.log(error.response.data.message,"res_error")
+   if(error.response.status == 400){
+       enqueueSnackbar("400 failed",{variant:"error"})
+     } else{
+     enqueueSnackbar("other 400 error",{variant:"error"})
+   }
+  }
+
+  //   finally{
+  //    // setIsLoading(false);
+  //   }
+   // }
+  
   };
 
   // TODO: CRIO_TASK_MODULE_REGISTER - Implement user input validation logic
@@ -57,7 +90,33 @@ const Register = () => {
    * -    Check that confirmPassword field has the same value as password field - Passwords do not match
    */
   const validateInput = (data) => {
+    // if(!data.username){
+    //   enqueueSnackbar("Username is a required field", {variant:"warning"})
+    //   return false;
+    // }
+    // if(!data.username.length<6){
+    //   enqueueSnackbar("Username must be at least 6 characters",{variant:"warning"})
+    //   return false;
+    // }
+    // if(!data.password){
+    //   enqueueSnackbar("Password is a required field",{variant:"warning"})
+    //   return false;
+    // }
+    // if(!data.password.length<6){
+    //   enqueueSnackbar("Password must be at least 6 characters",{variant:"warning"})
+    //   return false;
+    // }
+    // if(data.password !== data.confirmPassword){
+    //   enqueueSnackbar("Username must be at least 6 characters",{variant:"warning"})
+    //   return false;
+    // }
+    // return true;
   };
+
+  const handleInput = (e) =>{
+    setFormData((prev)=>({...prev, [e.target.name]: e.target.value}))
+  }
+
 
   return (
     <Box
@@ -76,6 +135,8 @@ const Register = () => {
             variant="outlined"
             title="Username"
             name="username"
+            value={formData.username}
+            onChange={(e)=>handleInput(e)}
             placeholder="Enter Username"
             fullWidth
           />
@@ -85,6 +146,8 @@ const Register = () => {
             label="Password"
             name="password"
             type="password"
+            value={formData.password}
+            onChange={(e)=>handleInput(e)}
             helperText="Password must be atleast 6 characters length"
             fullWidth
             placeholder="Enter a password with minimum 6 characters"
@@ -94,10 +157,12 @@ const Register = () => {
             variant="outlined"
             label="Confirm Password"
             name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={(e)=>handleInput(e)}
             type="password"
             fullWidth
           />
-           <Button className="button" variant="contained">
+           <Button variant="contained" className="button" onClick={(e)=>register(formData)} >
             Register Now
            </Button>
           <p className="secondary-action">
