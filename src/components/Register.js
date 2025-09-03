@@ -166,7 +166,7 @@ const Register = () => {
             type="password"
             fullWidth
           />
-           {isLoading ? <Box sx={{display:"fled", justifyContent:"center"}}><CircularProgress size={24}/></Box>:<Button variant="contained" className="button" onClick={(e)=>register(formData)} >
+           {isLoading ? <Box sx={{display:"flex", justifyContent:"center"}}><CircularProgress size={24}/></Box>:<Button variant="contained" className="button" onClick={(e)=>register(formData)} >
             Register Now
            </Button>}
           <p className="secondary-action">
