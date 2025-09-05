@@ -16,6 +16,7 @@ const Login = () => {
     password:""
   });
   const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
   // TODO: CRIO_TASK_MODULE_LOGIN - Fetch the API response
   /**
    * Perform the Login API call
@@ -55,7 +56,8 @@ const Login = () => {
         enqueueSnackbar("Logged in successfully",{variant:"success"})
         persistLogin(res.data.token,res.data.username,res.data.balance)
       }
-    
+      setIsLoading(false)
+      history.push("/")
      }catch(error){
       //console.log(error.response.data.message,"res_error")
      if(error.response.status == 400){
