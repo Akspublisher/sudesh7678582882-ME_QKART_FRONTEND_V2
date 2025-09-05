@@ -12,7 +12,6 @@ import React, { useEffect, useState } from "react";
 import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
-<<<<<<< ours
 import ProductCard from "./ProductCard";
 import "./Products.css";
 
@@ -32,7 +31,6 @@ const DummyData =
  * @typedef {Object} Product - Data on product available to buy
  * 
  * @property {string} name - The name or title of the product
-=======
 import "./Products.css";
 
 
@@ -41,12 +39,10 @@ import "./Products.css";
  * 
  * @property {string} name - The name or title of the product in cart
  * @property {string} qty - The quantity of product added to cart
->>>>>>> theirs
  * @property {string} category - The category that the product belongs to
  * @property {number} cost - The price to buy the product
  * @property {number} rating - The aggregate rating of the product (integer out of five)
  * @property {string} image - Contains URL for the product image
-<<<<<<< ours
  * @property {string} _id - Unique ID for the product
  */
 
@@ -60,13 +56,6 @@ const Products = () => {
 
   
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Fetch products data and store it
-=======
- * @property {string} productId - Unique ID for the product
- */
-
-const Products = () => {
-
->>>>>>> theirs
   /**
    * Make API call to get the products list and store it to display the products
    *
@@ -104,7 +93,6 @@ const Products = () => {
    * }
    */
   const performAPICall = async () => {
-<<<<<<< ours
     setIsLoading(true);
     try{
       const response = await axios.get(`${config.endpoint}/products`);
@@ -129,10 +117,6 @@ const Products = () => {
   };
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Implement search logic
-=======
-  };
-
->>>>>>> theirs
   /**
    * Definition for search handler
    * This is the function that is called on adding new search keys
@@ -147,7 +131,6 @@ const Products = () => {
    *
    */
   const performSearch = async (text) => {
-<<<<<<< ours
     try{
       const response = await axios.get(`${config.endpoint}/products/search?value=${text}`);
       setFilteredProducts(response.data);
@@ -170,10 +153,6 @@ const Products = () => {
   };
 
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Optimise API calls with debounce search implementation
-=======
-  };
-
->>>>>>> theirs
   /**
    * Definition for debounce handler
    * With debounce, this is the function to be called whenever the user types text in the searchbar field
@@ -186,7 +165,6 @@ const Products = () => {
    *
    */
   const debounceSearch = (event, debounceTimeout) => {
-<<<<<<< ours
     const value = event.target.value;
     //console.log(value);
     // performSearch(value);
@@ -202,7 +180,6 @@ const Products = () => {
     useEffect(() => {
     performAPICall();
   }, []);
-=======
   };
 
 
@@ -316,13 +293,11 @@ const Products = () => {
     options = { preventDuplicate: false }
   ) => {
   };
->>>>>>> theirs
 
 
   return (
     <div>
       <Header>
-<<<<<<< ours
         {/* TODO: CRIO_TASK_MODULE_PRODUCTS - Display search bar in the header for Products page */}
         <TextField
           className="search-desktop"
@@ -342,11 +317,6 @@ const Products = () => {
       </Header>
 
       {/* Search view for mobiles */}
-=======
-
-      </Header>
-
->>>>>>> theirs
       <TextField
         className="search-mobile"
         size="small"
@@ -361,7 +331,6 @@ const Products = () => {
         placeholder="Search for items/categories"
         name="search"
       />
-<<<<<<< ours
        <Grid container>
          <Grid item className="product-grid">
            <Box className="hero">
@@ -396,9 +365,6 @@ const Products = () => {
             </Grid>
          )}
        </Grid>
-=======
-        {/* TODO: CRIO_TASK_MODULE_CART - Display the Cart component */}
->>>>>>> theirs
       <Footer />
     </div>
   );
