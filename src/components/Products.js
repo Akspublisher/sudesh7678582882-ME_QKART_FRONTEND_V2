@@ -14,18 +14,26 @@ import Footer from "./Footer";
 import Header from "./Header";
 import ProductCard from "./ProductCard";
 import "./Products.css";
-
+import Cart, { generateCartItemsFrom } from "./Cart";
 
 const DummyData =
-{
+[{
   "name":"Tan Leatherette Weekender Duffle",
   "category":"Fashion",
   "cost":150,
   "rating":4,
   "image":"https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
   "_id":"PmInA797xJhMIPti"
-  }
-
+  },
+  {
+    "name":"Tan Leatherette Weekender Duffle",
+    "category":"Fashion",
+    "cost":150,
+    "rating":4,
+    "image":"https://crio-directus-assets.s3.ap-south-1.amazonaws.com/ff071a1c-1099-48f9-9b03-f858ccc53832.png",
+    "_id":"PmInA797xJhMIPti"
+    }
+]
 // Definition of Data Structures used
 /**
  * @typedef {Object} Product - Data on product available to buy
@@ -53,8 +61,8 @@ const Products = () => {
   const [debounceTimeout, setDebounceTimeout] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const {enqueueSnackbar} = useSnackbar();
-
-  
+  const [items, setItems] = useState([]);
+  const token = localStorage.getItem("token");
   // TODO: CRIO_TASK_MODULE_PRODUCTS - Fetch products data and store it
   /**
    * Make API call to get the products list and store it to display the products
@@ -141,7 +149,7 @@ const Products = () => {
           setFilteredProducts([]);
         }
         if(err.response.status=== 500){
-          enqueueSnackbar(err.data.status, {variant: "error"});
+          enqueueSnackbar(err.data.message, {variant: "error"});
           setFilteredProducts(Products);
         }
       } else {
@@ -177,12 +185,6 @@ const Products = () => {
     setDebounceTimeout(timeout);
   };
 
-    useEffect(() => {
-    performAPICall();
-  }, []);
-  };
-
-
   /**
    * Perform the API call to fetch the user's cart and return the response
    *
@@ -212,23 +214,21 @@ const Products = () => {
    * }
    */
   const fetchCart = async (token) => {
-    if (!token) return;
+    if (!token) return
 
     try {
       // TODO: CRIO_TASK_MODULE_CART - Pass Bearer token inside "Authorization" header to get data from "GET /cart" API and return the response data
-    } catch (e) {
-      if (e.response && e.response.status === 400) {
-        enqueueSnackbar(e.response.data.message, { variant: "error" });
-      } else {
-        enqueueSnackbar(
-          "Could not fetch cart details. Check that the backend is running, reachable and returns valid JSON.",
-          {
-            variant: "error",
-          }
-        );
+     const response = await axios.get(`${config.endpoint}/cart`, {
+      headers:{
+        Authorization: `Bearer ${token}`,
       }
-      return null;
-    }
+     });
+    // console.log(response.data)
+     return response.data;
+  } catch {
+    enqueueSnackbar("Could not fetch cart details. Check that the backend is running, reachable and returns valid JSON.", { variant: "error" })
+    return null
+  }
   };
 
 
@@ -246,8 +246,8 @@ const Products = () => {
    *
    */
   const isItemInCart = (items, productId) => {
+    return items.findIndex((item) => item.productId === productId) !== -1;
   };
-
   /**
    * Perform the API call to add or update items in the user's cart and update local cart data to display the latest cart
    *
@@ -284,15 +284,109 @@ const Products = () => {
    *      "message": "Product doesn't exist"
    * }
    */
-  const addToCart = async (
-    token,
-    items,
-    products,
-    productId,
-    qty,
-    options = { preventDuplicate: false }
-  ) => {
+  // const addToCart = async (
+  //   token,
+  //   items,
+  //   products,
+  //   productId,
+  //   qty,
+  //   options = { preventDuplicate: false }
+  // ) => {
+  //   if (!token) {
+  //     enqueueSnackbar("Please log in to add item to cart", {
+  //       variant: "warning",
+  //     });
+  //     return;
+  //   }
+
+  //   if (options.preventDuplicate && isItemInCart(items, productId)) {
+  //     enqueueSnackbar(
+  //       "Item already in cart. Use the cart slidebar to update quantity or remove item.",
+  //       { variant: "warning" },
+  //     );
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await axios.post(
+  //       `${config.endpoint}/cart`,
+  //       { productId, qty },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     const cartItems = generateCartItemsFrom(response.data, products)
+  //     setItems(cartItems)
+  //   } catch (e) {
+  //     if (e.response) {
+  //       enqueueSnackbar(e.response.data.message, { variant: "error" });
+  //     } else {
+  //       enqueueSnackbar(
+  //         "Could not fetch products. Check that the backend id=s running,reachable and return valid JSON",
+  //         {
+  //           variant: "error",
+  //         }
+  //       );
+  //     }
+  //   }
+  //   console.log("Added to cart", productId);
+  // };
+
+  const addToCart = async (token, items, productId, products, qty, options = { preventDuplicate: false }) => {
+    if (!token) {
+      enqueueSnackbar("Please log in to add item to cart", {
+        variant: "warning",
+      });
+      return;
+    }
+
+    if (options.preventDuplicate && isItemInCart(items, productId)) {
+      enqueueSnackbar(
+        "Item already in cart. Use the cart slidebar to update quantity or remove item.",
+        { variant: "warning" },
+      );
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${config.endpoint}/cart`,
+        { productId, qty },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const cartItems = generateCartItemsFrom(response.data, products)
+      setItems(cartItems)
+    } catch (e) {
+      if (e.response) {
+        enqueueSnackbar(e.response.data.message, { variant: "error" });
+      } else {
+        enqueueSnackbar(
+          "Could not fetch products. Check that the backend id=s running,reachable and return valid JSON",
+          {
+            variant: "error",
+          }
+        );
+      }
+    }
+
+    console.log("Added to cart", productId);
   };
+
+ useEffect(() => {
+  performAPICall();
+}, []);
+
+useEffect(() => {
+  fetchCart(token).then((cartData) => generateCartItemsFrom(cartData, products)).then((cartItems) => setItems(cartItems))
+}, [products])
+
 
 
   return (
@@ -331,28 +425,32 @@ const Products = () => {
         placeholder="Search for items/categories"
         name="search"
       />
-       <Grid container>
-         <Grid item className="product-grid">
-           <Box className="hero">
-             <p className="hero-heading">
-               India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
-               to your door step
-             </p>
-           </Box>
-         </Grid>
-         {/* <ProductCard  /> */}
-         {isLoading ? (
-          <Box className="loading">
-            <CircularProgress />
-            <h4>Loading Products...</h4>
-          </Box>
-         ):(
+
+  <Grid container>
+        <Grid item xs={12} md={9}>
+          <Grid item className="product-grid" >
+            <Box className="hero">
+              <p className="hero-heading">
+                India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
+                to your door step
+              </p>
+            </Box>
+          </Grid>
+          {isLoading ? (
+            <Box className="loading">
+              <CircularProgress />
+              <h4>Loading Products...</h4>
+            </Box>
+          ) : (
             <Grid container marginY="1rem" paddingX="1rem" spacing={2}>
               {filteredProducts.length ? (
                 filteredProducts.map((product) => (
                   <Grid item xs={6} md={3} key={product._id}>
                     <ProductCard
                       product={product}
+                      handleAddToCart={async () =>
+                        await addToCart(token, items, product._id, products, 1, { preventDuplicate: true })
+                      }
                     />
                   </Grid>
                 ))
@@ -363,11 +461,19 @@ const Products = () => {
                 </Box>
               )}
             </Grid>
-         )}
-       </Grid>
+          )}
+        </Grid>
+
+        {token ? (
+          <Grid item xs={12} md={3} bg="#E9F5E1">
+            <Cart products={products} items={items} handleQuantity={addToCart} />
+          </Grid>
+        ) : null}
+      </Grid>
+
       <Footer />
     </div>
   );
-};
+};  
 
 export default Products;
