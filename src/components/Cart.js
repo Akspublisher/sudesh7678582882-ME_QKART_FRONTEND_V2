@@ -48,6 +48,7 @@ import "./Cart.css";
  *
  */
 export const generateCartItemsFrom = (cartData, productsData) => {
+<<<<<<< ours
   if(!cartData) return;
   const nextCart = cartData.map((item) => ({
     ...item,
@@ -55,6 +56,10 @@ export const generateCartItemsFrom = (cartData, productsData) => {
   }));
   return nextCart;
 };
+=======
+};
+
+>>>>>>> theirs
 /**
  * Get the total value of all products added to the cart
  *
@@ -66,12 +71,32 @@ export const generateCartItemsFrom = (cartData, productsData) => {
  *
  */
 export const getTotalCartValue = (items = []) => {
+<<<<<<< ours
  if(!items.length) return 0
  const total = items.map((item) => item.cost * item.qty).reduce((total, n) => total + n)
  return total;
 };
 
 
+=======
+};
+
+// TODO: CRIO_TASK_MODULE_CHECKOUT - Implement function to return total cart quantity
+/**
+ * Return the sum of quantities of all products added to the cart
+ *
+ * @param { Array.<CartItem> } items
+ *    Array of objects with complete data on products in cart
+ *
+ * @returns { Number }
+ *    Total quantity of products added to the cart
+ *
+ */
+export const getTotalItems = (items = []) => {
+};
+
+// TODO: CRIO_TASK_MODULE_CHECKOUT - Add static quantity view for Checkout page cart
+>>>>>>> theirs
 /**
  * Component to display the current quantity for a product and + and - buttons to update product quantity on cart
  * 
@@ -84,11 +109,14 @@ export const getTotalCartValue = (items = []) => {
  * @param {Function} handleDelete
  *    Handler function which reduces the quantity of a product in cart by 1
  * 
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
  * 
  */
 const ItemQuantity = ({
   value,
   handleAdd,
+<<<<<<< ours
   handleDelete, isReadOnly = false}) => {
     if(isReadOnly){
       return <Box>Qty: {value}</Box>
@@ -96,6 +124,10 @@ const ItemQuantity = ({
 
 //   }
 // // }) => {
+=======
+  handleDelete,
+}) => {
+>>>>>>> theirs
   return (
     <Stack direction="row" alignItems="center">
       <IconButton size="small" color="primary" onClick={handleDelete}>
@@ -123,15 +155,23 @@ const ItemQuantity = ({
  * @param {Function} handleDelete
  *    Current quantity of product in cart
  * 
+ * @param {Boolean} isReadOnly
+ *    If product quantity on cart is to be displayed as read only without the + - options to change quantity
  * 
  */
 const Cart = ({
   products,
   items = [],
+<<<<<<< ours
   handleQuantity, isReadOnly = false 
 }) => {
   const history = useHistory();
   const token = localStorage.getItem("token")
+=======
+  handleQuantity,
+}) => {
+
+>>>>>>> theirs
   if (!items.length) {
     return (
       <Box className="cart empty">
@@ -143,6 +183,7 @@ const Cart = ({
     );
   }
 
+<<<<<<< ours
 //   return (
 //     <>
 //       <Box className="cart">
@@ -336,6 +377,34 @@ return (
     </Box>
   </>
 );
+=======
+  return (
+    <>
+      <Box className="cart">
+        <Box
+          padding="1rem"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Box color="#3C3C3C" alignSelf="center">
+            Order total
+          </Box>
+          <Box
+            color="#3C3C3C"
+            fontWeight="700"
+            fontSize="1.5rem"
+            alignSelf="center"
+            data-testid="cart-total"
+          >
+            ${getTotalCartValue(items)}
+          </Box>
+        </Box>
+
+      </Box>
+    </>
+  );
+>>>>>>> theirs
 };
 
 export default Cart;
