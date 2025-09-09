@@ -42,19 +42,6 @@ import Header from "./Header";
  * @property {string} productId - Unique ID for the product
  */
 
-<<<<<<< ours
-
-
-const Checkout = () => {
-
-
-
-
-
-
-
-
-=======
 /**
  * @typedef {Object} Address - Data on added address
  *
@@ -414,7 +401,6 @@ const Checkout = () => {
     onLoadHandler();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
->>>>>>> theirs
 
   return (
     <>
@@ -432,10 +418,6 @@ const Checkout = () => {
             </Typography>
             <Divider />
             <Box>
-<<<<<<< ours
-            </Box>
-
-=======
               {/* TODO: CRIO_TASK_MODULE_CHECKOUT - Display list of addresses and corresponding "Delete" buttons, if present, of which 1 can be selected */}
                <Typography my="1rem">
                  No addresses found for this account. Please add one to proceed
@@ -463,7 +445,6 @@ const Checkout = () => {
                 handleNewAddress={setNewAddress}
                 addAddress={addAddress}
             />
->>>>>>> theirs
 
             <Typography color="#3C3C3C" variant="h4" my="1rem">
               Payment
