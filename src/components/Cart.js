@@ -9,6 +9,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import "./Cart.css";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
 // Definition of Data Structures used
 /**
@@ -146,7 +147,7 @@ const ItemQuantity = ({
 const Cart = ({
   products,
   items = [],
-  handleQuantity, isReadOnly = false 
+  handleQuantity, local = false, isReadOnly = false 
 }) => {
   const history = useHistory();
   const token = localStorage.getItem("token")
@@ -285,6 +286,7 @@ return (
                   justifyContent="space-between"
                   alignItems="center"
                 >
+                  
                   <ItemQuantity
                     value={item.qty}
                     handleAdd={async () => {
@@ -318,7 +320,7 @@ return (
         </Box>
       ))
       }
-      <Box
+      {/* <Box
         padding="1rem"
         display="flex"
         justifyContent="space-between"
@@ -337,6 +339,7 @@ return (
           ${getTotalCartValue(items)}
         </Box>
       </Box>
+      
 
       <Box display="flex" justifyContent="flex-end" className="cart-footer">
         <Button
@@ -352,7 +355,142 @@ return (
         </Button>
       </Box>
     </Box>
-  </>
+  </> */}
+  <Box
+          padding="1rem"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Box color="#3C3C3C" alignSelf="center" fontSize="0.8rem">
+            Order total
+          </Box>
+          <Box
+            color="#3C3C3C"
+            fontWeight="700"
+            fontSize="1rem"
+            alignSelf="center"
+            data-testid="cart-total"
+          >
+            ${getTotalCartValue(items)}
+          </Box>
+        </Box>
+        {!isReadOnly && (
+          <Box display="flex" justifyContent="flex-end" className="cart-footer">
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={local ? <VpnKeyIcon /> : <ShoppingCart />}
+              className="checkout-btn"
+              size="small"
+              onClick={() => {
+                if (local) {
+                  history.push("/login");
+                } else {
+                  history.push("/checkout");
+                }
+              }}
+            >
+              {/* TODO; collect user email and send a confirmation email upon checkout */}
+              {local ? "Login to Checkout" : "Checkout"}
+            </Button>
+          </Box>
+        )}
+      </Box>
+      {isReadOnly && (
+        <Box className="cart" padding="1rem 0rem">
+          <Box
+            padding=" 1rem 1rem 0rem 1rem "
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Box alignSelf="center" fontSize="1.5rem" fontWeight="bold">
+              Order Details
+            </Box>
+          </Box>
+          <Stack padding="1rem" spacing={1.5}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box color="#3C3C3C" alignSelf="center" fontSize="0.8rem">
+                Products
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="0.8rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                {items.length}
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box color="#3C3C3C" alignSelf="center" fontSize="0.8rem">
+                Subtotal
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="0.8rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                ${getTotalCartValue(items)}
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box color="#3C3C3C" alignSelf="center" fontSize="0.8rem">
+                Shipping Charges
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="0.8rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                $0
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box
+                color="#3C3C3C"
+                alignSelf="center"
+                fontSize="1rem"
+                fontWeight="bold"
+              >
+                Total
+              </Box>
+              <Box
+                color="#3C3C3C"
+                fontWeight="700"
+                fontSize="1rem"
+                alignSelf="center"
+                data-testid="cart-total"
+              >
+                ${getTotalCartValue(items)}
+              </Box>
+            </Box>
+          </Stack>
+        </Box>
+      )}
+    </>
 );
 };
 

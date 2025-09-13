@@ -427,9 +427,29 @@ useEffect(() => {
         name="search"
       />
 
-  <Grid container>
-        <Grid item xs={12} md={9}>
-          <Grid item className="product-grid" >
+{/* <Grid container sx={{ p: 2 }} spacing={2}>
+        <Grid
+          item
+          xs={12}
+          md={
+            localStorage.getItem("token") || (localCartItems.length && products)
+              ? 9
+              : 12
+          }
+          className="1"
+        ></Grid> */}
+  {/* <Grid container>
+        <Grid item xs={12} md={9}> */}
+         <Grid container sx={{ p: 2 }} spacing={2}>
+        <Grid item
+          xs={12}
+          md={
+            localStorage.getItem("token") 
+              ? 9
+              : 12
+          }>
+            
+            <Grid item className="product-grid">
             <Box className="hero">
               <p className="hero-heading">
                 India’s <span className="hero-highlight">FASTEST DELIVERY</span>{" "}
@@ -471,6 +491,7 @@ useEffect(() => {
           </Grid>
         ) : null}
       </Grid>
+      
 
       <Footer />
     </div>
